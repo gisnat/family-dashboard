@@ -104,11 +104,10 @@ body{
 <div class="grid">
 
     <div class="tile" onclick="openTile('weather')">
-        <div class="tile-title">🌦 Weather</div>
-        <div class="tile-content">
-            Auckland<br>
-            Coming Soon
-        </div>
+      <div class="tile-title">🌦 Weather</div>
+      <div class="tile-content" id="weatherTile">
+         Loading...
+    </div>
     </div>
 
     <div class="tile" onclick="openTile('traffic')">
@@ -215,6 +214,7 @@ function closeTile(){
 async function loadTodo(){
 
     const csvUrl =
+    const csvUrl =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQX28gXFAl_D2C326JF5X_tdLcdj6mQkv515uQID4WU01lyAZBMne2oMjpShwliQ7JAEyMkDZhBUlli/pub?gid=0&single=true&output=csv";
 
     try{
@@ -254,6 +254,7 @@ async function loadTodo(){
 async function loadTodoFullscreen(){
 
     const csvUrl =
+    const csvUrl =
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vQX28gXFAl_D2C326JF5X_tdLcdj6mQkv515uQID4WU01lyAZBMne2oMjpShwliQ7JAEyMkDZhBUlli/pub?gid=0&single=true&output=csv";
 
     try{
@@ -289,6 +290,55 @@ async function loadTodoFullscreen(){
         "Unable to load tasks";
     }
 }
+
+async function loadWeather(){
+
+    try{
+
+        const url =
+        "https://api.open-meteo.com/v1/forecast?latitude=-36.8485&longitude=174.7633&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Pacific%2FAuckland";
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const temp = Math.round(data.current.temperature_2m);
+
+        const max =
+        Math.round(data.daily.temperature_2m_max[0]);
+
+        const min =
+        Math.round(data.daily.temperature_2m_min[0]);
+
+        let condition = "Clear";
+
+        const code = data.current.weather_code;
+
+        if(code >= 51) condition = "Rain";
+        if(code >= 61) condition = "Rain";
+        if(code >= 71) condition = "Snow";
+        if(code >= 95) condition = "Thunderstorm";
+
+        document.getElementById("weatherTile").innerHTML =
+        `
+        Auckland<br>
+        ${temp}°C<br>
+        ${condition}<br>
+        H ${max}° L ${min}°
+        `;
+
+    }catch(err){
+
+        document.getElementById("weatherTile").innerHTML =
+        `
+        Auckland<br>
+        Weather unavailable
+        `;
+    }
+}
+
+loadWeather();
+
+setInterval(loadWeather,1800000);
 
 loadTodo();
 
