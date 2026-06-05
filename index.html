@@ -53,11 +53,6 @@ body{
     padding:20px;
     box-sizing:border-box;
     cursor:pointer;
-    transition:0.2s;
-}
-
-.tile:hover{
-    background:#2d2d2d;
 }
 
 .tile-title{
@@ -112,8 +107,7 @@ body{
         <div class="tile-title">🌦 Weather</div>
         <div class="tile-content">
             Auckland<br>
-            14°C<br>
-            Light Rain
+            Coming Soon
         </div>
     </div>
 
@@ -121,26 +115,21 @@ body{
         <div class="tile-title">🚗 Traffic to OGGB</div>
         <div class="tile-content">
             Half Moon Bay → OGGB<br>
-            Current: 35 min<br>
-            Normal: 22 min
+            Tap for route
         </div>
     </div>
 
     <div class="tile" onclick="openTile('calendar')">
         <div class="tile-title">📅 Family Calendar</div>
         <div class="tile-content">
-            Today<br>
-            10:00 Dentist<br>
-            15:00 Football
+            Coming Soon
         </div>
     </div>
 
     <div class="tile" onclick="openTile('todo')">
         <div class="tile-title">✅ To Do</div>
-        <div class="tile-content">
-            Buy Milk<br>
-            Pay Power Bill<br>
-            Pick Up Parcel
+        <div class="tile-content" id="todoTile">
+            Loading...
         </div>
     </div>
 
@@ -186,41 +175,124 @@ function openTile(type){
         case "weather":
             html=`
             <h1>Weather</h1>
-            <p>Auckland Weather Details</p>
-            <p>Future API data goes here.</p>
+            <p>Live Auckland weather coming next.</p>
             `;
             break;
 
         case "traffic":
-            html=`
-            <h1>Traffic to OGGB</h1>
-            <p>Current Travel Time: 35 min</p>
-            <p>Traffic Map will go here later.</p>
-            `;
-            break;
+            window.open(
+            "https://www.google.com/maps/dir/Half+Moon+Bay+Auckland/OGGB+Auckland",
+            "_blank");
+            return;
 
         case "calendar":
             html=`
             <h1>Family Calendar</h1>
-            <p>Google Calendar integration later.</p>
+            <p>Calendar integration coming next.</p>
             `;
             break;
 
         case "todo":
             html=`
-            <h1>To Do List</h1>
-            <p>Shared family tasks.</p>
+            <h1>Family To Do</h1>
+            <div id="todoFullScreen">Loading...</div>
             `;
             break;
     }
 
     document.getElementById("fullContent").innerHTML=html;
     document.getElementById("fullscreen").style.display="block";
+
+    if(type==="todo"){
+        loadTodoFullscreen();
+    }
 }
 
 function closeTile(){
     document.getElementById("fullscreen").style.display="none";
 }
+
+async function loadTodo(){
+
+    const csvUrl =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrKbOiKTvTEywntxPWAw7zQJUMwYVLvhO0Dsui2Hgi7vWiW-2z1W9-HwvN1b6fg8gJJG4oKrBBPy0i/pub?output=csv";
+
+    try{
+
+        const response = await fetch(csvUrl);
+        const text = await response.text();
+
+        const rows = text.trim().split('\n');
+
+        let html = "";
+
+        for(let i=1;i<rows.length;i++){
+
+            const cols = rows[i].split(',');
+
+            const done = cols[0].trim();
+            const task = cols[1] ? cols[1].trim() : "";
+
+            if(task !== "" && done === ""){
+                html += "• " + task + "<br>";
+            }
+        }
+
+        if(html === ""){
+            html = "🎉 No tasks remaining";
+        }
+
+        document.getElementById("todoTile").innerHTML = html;
+
+    }catch(err){
+
+        document.getElementById("todoTile").innerHTML =
+        "Unable to load tasks";
+    }
+}
+
+async function loadTodoFullscreen(){
+
+    const csvUrl =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSrKbOiKTvTEywntxPWAw7zQJUMwYVLvhO0Dsui2Hgi7vWiW-2z1W9-HwvN1b6fg8gJJG4oKrBBPy0i/pub?output=csv";
+
+    try{
+
+        const response = await fetch(csvUrl);
+        const text = await response.text();
+
+        const rows = text.trim().split('\n');
+
+        let html = "";
+
+        for(let i=1;i<rows.length;i++){
+
+            const cols = rows[i].split(',');
+
+            const done = cols[0].trim();
+            const task = cols[1] ? cols[1].trim() : "";
+
+            if(task !== "" && done === ""){
+                html += "• " + task + "<br><br>";
+            }
+        }
+
+        if(html === ""){
+            html = "🎉 No tasks remaining";
+        }
+
+        document.getElementById("todoFullScreen").innerHTML = html;
+
+    }catch(err){
+
+        document.getElementById("todoFullScreen").innerHTML =
+        "Unable to load tasks";
+    }
+}
+
+loadTodo();
+
+setInterval(loadTodo,300000);
 
 </script>
 
