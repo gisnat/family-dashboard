@@ -13,7 +13,7 @@ body{margin:0;background:#111;color:white;font-family:Arial,sans-serif;overflow:
 .tile{background:#222;border-radius:20px;padding:20px;box-sizing:border-box;cursor:pointer;}
 .tile-title{font-size:26px;font-weight:bold;margin-bottom:15px;}
 .tile-content{font-size:20px;line-height:1.6;color:#ddd;}
-#weatherTile{font-size:32px;line-height:1.3;}
+#weatherTile{font-size:30px;line-height:1.3;}
 #fullscreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#111;display:none;z-index:999;}
 #backBtn{margin:15px;padding:10px 20px;font-size:18px;border:none;border-radius:10px;}
 #fullContent{padding:20px;font-size:28px;}
@@ -67,8 +67,12 @@ function openTile(type){
  window.open("https://www.google.com/maps/dir/Half+Moon+Bay+Auckland/OGGB+Auckland","_blank");
  return;
  case "calendar":
- html=`<h1>Family Calendar</h1><p>Calendar integration coming next.</p>`;
- break;
+
+    window.open(
+    "https://calendar.google.com/calendar/u/0/embed?src=family01253806463679416003%40group.calendar.google.com",
+    "_blank");
+
+    return;
  case "todo":
  html=`<h1>Family To Do</h1><div id="todoFullScreen">Loading...</div>`;
  break;
