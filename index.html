@@ -120,11 +120,13 @@ async function loadTraffic(){
 
     let icon = "🟢";
 
-    if(data.status==="moderate") icon="🟠";
-    if(data.status==="heavy") icon="🔴";
+      if(data.status==="warning") icon="🟠";
+      if(data.status==="alert") icon="🔴";
 
     document.getElementById("trafficTile").innerHTML =
-      `${icon} ${data.minutes} min`;
+     `${icon} ${data.status.toUpperCase()}<br>${data.message}`;
+
+
 
   }catch(err){
 
