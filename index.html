@@ -123,9 +123,12 @@ async function loadTraffic(){
       if(data.status==="warning") icon="🟠";
       if(data.status==="alert") icon="🔴";
 
-    document.getElementById("trafficTile").innerHTML =
-     `${icon} ${data.status.toUpperCase()}<br>${data.message}`;
+    const statusText =
+ 	 data.status.charAt(0).toUpperCase() +
+	 data.status.slice(1);
 
+	document.getElementById("trafficTile").innerHTML =
+         `${icon} ${statusText}<br>${data.message}`;
 
 
   }catch(err){
