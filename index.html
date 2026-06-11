@@ -9,10 +9,20 @@ body{margin:0;background:#111;color:white;font-family:Arial,sans-serif;overflow:
 #header{height:70px;background:#1b1b1b;display:flex;justify-content:space-between;align-items:center;padding:0 20px;box-sizing:border-box;border-bottom:1px solid #333;}
 #clock{font-size:32px;font-weight:bold;}
 #date{font-size:18px;color:#bbb;}
-.grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:10px;height:calc(100vh - 90px);box-sizing:border-box;}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+grid-template-rows:1fr 1fr 1fr;
+gap:10px;
+padding:10px;
+height:calc(100vh - 90px);
+box-sizing:border-box;
+}
 .tile{background:#222;border-radius:20px;padding:20px;box-sizing:border-box;cursor:pointer;}
 .tile-title{font-size:26px;font-weight:bold;margin-bottom:15px;}
 .tile-content{font-size:20px;line-height:1.6;color:#ddd;}
+
 #weatherTile{font-size:30px;line-height:1.3;}
 #fullscreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#111;display:none;z-index:999;}
 #backBtn{margin:15px;padding:10px 20px;font-size:18px;border:none;border-radius:10px;}
@@ -45,6 +55,21 @@ Loading...
 <div class="tile" onclick="openTile('todo')">
 <div class="tile-title">✅ To Do</div>
 <div class="tile-content" id="todoTile">Loading...</div>
+</div>
+</div>
+
+
+<div class="tile">
+<div class="tile-title">🌱 Garden</div>
+<div class="tile-content" id="gardenTile">
+Loading...
+</div>
+</div>
+
+<div class="tile">
+<div class="tile-title">⭐ Future</div>
+<div class="tile-content">
+Coming Soon
 </div>
 </div>
 
@@ -234,6 +259,58 @@ async function loadEvents(){
  }
 }
 
+
+async function loadGarden(){
+
+  const csvUrl =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO7JVf0fgcBotEA2ZrezNwlWX6VT2Zd2ep-wx-sQNpG47KNIgtS6pXMtxw5gdoUQdCahZ0efGOEp8s/pub?output=csv";
+
+  try{
+
+    const response = await fetch(csvUrl);
+    const text = await response.text();
+
+    const rows = text.trim().split('\n');
+
+    const monthNames = [
+      "January","February","March","April",
+      "May","June","July","August",
+      "September","October","November","December"
+    ];
+
+    const currentMonth =
+      monthNames[new Date().getMonth()];
+
+    let html = "";
+
+    for(let i=1;i<rows.length;i++){
+
+      const cols = rows[i].split(',');
+
+      const month = (cols[0]||"").replace(/"/g,"").trim();
+      const task = (cols[2]||"").replace(/"/g,"").trim();
+
+      if(month === currentMonth && task !== ""){
+        html += "• " + task + "<br>";
+      }
+    }
+
+    if(html===""){
+      html = "No garden tasks this month";
+    }
+
+    document.getElementById("gardenTile").innerHTML = html;
+
+  }catch(err){
+
+    document.getElementById("gardenTile").innerHTML =
+      "Unable to load garden tasks";
+
+  }
+}
+
+
+
 loadWeather();
 setInterval(loadWeather,1800000);
 
@@ -245,6 +322,10 @@ setInterval(loadEvents,300000);
 
 loadTraffic();
 setInterval(loadTraffic,300000);
+
+loadGarden();
+setInterval(loadGarden,3600000);
+
 
 </script>
 </body>
