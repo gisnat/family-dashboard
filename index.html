@@ -27,9 +27,36 @@ box-sizing:border-box;
 #gardenTile{font-size:18px;line-height:1.5;}
 #trafficTile{font-size:24px;line-height:1.4;}
 
-#fullscreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#111;display:none;z-index:999;}
-#backBtn{margin:15px;padding:10px 20px;font-size:18px;border:none;border-radius:10px;}
-#fullContent{padding:20px;font-size:28px;}
+#fullscreen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#111;
+display:none;
+z-index:999;
+overflow-y:auto;
+}
+
+#backBtn{
+position:sticky;
+top:10px;
+margin:15px;
+padding:10px 20px;
+font-size:18px;
+border:none;
+border-radius:10px;
+z-index:1000;
+}
+
+#fullContent{
+padding:20px;
+font-size:28px;
+max-width:1200px;
+margin:auto;
+}
+
 </style>
 </head>
 <body>
@@ -96,7 +123,11 @@ function openTile(type){
  html=`<h1>🌦 Auckland Forecast</h1><div id="weatherFullScreen">Loading forecast...</div>`;
  break;
  case "traffic":
- window.open("https://www.google.com/maps/dir/Half+Moon+Bay+Auckland/OGGB+Auckland","_blank");
+window.open(
+"https://www.google.com/maps/dir/Jillteresa+Crescent,+Half+Moon+Bay,+Auckland/Owen+G+Glenn+Building,+University+of+Auckland",
+"_blank"
+);
+
  return;
  
 case "calendar":
